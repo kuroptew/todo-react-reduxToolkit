@@ -20,9 +20,7 @@ export const TodoList = () => {
 
   const onDelete = useCallback((id) => {
     request(`http://localhost:3001/todos/${id}`, "DELETE")
-      .then(data => console.log(data, 'Deleted'))
       .then(dispatch(todoDeleted(id)))
-      .catch(err => console.log(err));
   }, [request]);
 
   if (todosLoadingStatus === "loading") {
@@ -44,7 +42,7 @@ export const TodoList = () => {
         <TodoItem
           key={id}
           {...props}
-
+          onDelete={() => onDelete(id)}
         />
       )
     })

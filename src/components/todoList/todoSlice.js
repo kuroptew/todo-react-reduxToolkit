@@ -49,12 +49,7 @@ const { actions, reducer } = todosSlice;
 
 export default reducer;
 
-console.log(todosAdapter)
-console.log(todosSlice)
-
-
 export const { selectAll } = todosAdapter.getSelectors(state => state.todos)
-
 
 export const {
   todoCreated,
