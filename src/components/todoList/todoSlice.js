@@ -1,7 +1,5 @@
-import {createSlice, createEntityAdapter, createAsyncThunk,} from "@reduxjs/toolkit";
+import {createSlice, createEntityAdapter, createAsyncThunk, createSelector,} from "@reduxjs/toolkit";
 import { useHttp } from "../../hooks/http.hook";
-
-
 
 const todosAdapter = createEntityAdapter()
 
@@ -11,12 +9,11 @@ const initialState = todosAdapter.getInitialState({
 
 export const fetchTodos = createAsyncThunk(
   'todos/fetchTodos',
-  async () => {
+  () => {
     const { request } = useHttp();
-    return await request("http://localhost:3001/todos")
+    return request("http://localhost:3001/todos")
   }
 )
-
 
 const todosSlice = createSlice({
   name: 'todos',
@@ -27,7 +24,10 @@ const todosSlice = createSlice({
     },
     todoDeleted: (state, action) => {
       todosAdapter.removeOne(state, action.payload)
-    }
+    },
+    todoToggle:(state, action)=>{
+      todosAdapter.updateOne(state, action)
+      }
   },
   extraReducers: (builder) => {
     builder
@@ -49,9 +49,33 @@ const { actions, reducer } = todosSlice;
 
 export default reducer;
 
-export const { selectAll } = todosAdapter.getSelectors(state => state.todos)
+const { selectAll } = todosAdapter.getSelectors(state => state.todos)
+
+const filteredTodosSelector = createSelector(
+  state => state.filters.activeFilter,
+  selectAll,
+  (filter, todos) =>{
+    switch(filter){
+      case "done":
+        return  todos.filter(todo=> todo.done)
+      case "unexpected":
+        return  todos.filter(todo=> !todo.done)
+      default:
+        return todos
+    }
+
+  })
+
+export const filteredAndSearchTodosSelector = createSelector(
+  state=>state.filters.activeQuery,
+  filteredTodosSelector,
+  (query,todos)=>{
+    return todos.filter(todo => todo.title.toLowerCase().includes(query.toLowerCase()))
+  }
+)
 
 export const {
   todoCreated,
-  todoDeleted
+  todoDeleted,
+  todoToggle
 } = actions

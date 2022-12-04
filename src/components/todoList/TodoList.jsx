@@ -1,13 +1,12 @@
 import React, {useCallback, useEffect} from 'react'
-import {selectAll, fetchTodos, todoDeleted} from './todoSlice'
-import {store} from '../../store'
+import {filteredAndSearchTodosSelector, fetchTodos, todoDeleted, todoToggle} from './todoSlice'
 import {useDispatch, useSelector} from "react-redux";
 import Spinner from "../spinner/Spinner";
 import TodoItem from "../todoItem/TodoItem";
 import {useHttp} from "../../hooks/http.hook";
 
 export const TodoList = () => {
-  const todos = selectAll(store.getState())
+  const filteredAndSearchTodos = useSelector(filteredAndSearchTodosSelector)
   const {todosLoadingStatus} = useSelector(state => state.todos)
   const dispatch = useDispatch();
   const {request} = useHttp();
@@ -15,7 +14,6 @@ export const TodoList = () => {
 
   useEffect(() => {
     dispatch(fetchTodos());
-
   }, []);
 
   const onDelete = useCallback((id) => {
@@ -23,12 +21,16 @@ export const TodoList = () => {
       .then(dispatch(todoDeleted(id)))
   }, [request]);
 
+  const onToggle = useCallback((todo) => {
+    request(`http://localhost:3001/todos/${todo.id}`, 'PATCH', JSON.stringify({"done": !todo.done}))
+      .then(dispatch(todoToggle({id: todo.id, changes: {done: !todo.done}})))
+  }, [request])
+
   if (todosLoadingStatus === "loading") {
     return <Spinner/>;
   } else if (todosLoadingStatus === "error") {
     return <h5>Ошибка загрузки</h5>
   }
-
 
   const renderTodosList = (arr) => {
     if (arr.length === 0) {
@@ -37,26 +39,24 @@ export const TodoList = () => {
       )
     }
 
-    return arr.map(({id, ...props}) => {
+    return arr.map((todo) => {
+      const {id, ...props} = todo
       return (
         <TodoItem
           key={id}
           {...props}
+          onToggle={() => onToggle(todo)}
           onDelete={() => onDelete(id)}
         />
       )
     })
   }
 
-  const elements = renderTodosList(todos)
+  const elements = renderTodosList(filteredAndSearchTodos)
 
   return (
-    <>
-      <h1 style={{textAlign:"center"}}>TODO APP</h1>
       <ul style={{display: 'grid', gap: 50, gridAutoFlow: "row", padding: 0, margin: 0}}>
         {elements}
       </ul>
-    </>
-
   )
 }

@@ -3,17 +3,36 @@
     {
       "id": 1,
       "title": "Learn JS",
-      "done": true
-    },
-    {
-      "id": 2,
-      "title": "Learn React",
       "done": false
     },
     {
-      "title": "learn java",
-      "done": true,
-      "id": "52da8047-14b2-4a52-9c56-99716194d083"
+      "title": "Learn Redux",
+      "done": false,
+      "id": "9f0c57fe-ab25-4873-9a63-9ec436a02b09"
+    },
+    {
+      "title": "Learn TS",
+      "done": false,
+      "id": "9e26a035-d347-4581-9f3a-4995b3a033ad"
+    },
+    {
+      "title": "Game",
+      "done": false,
+      "id": "e693d2fa-3def-4c12-a131-c46c7f646087"
+    }
+  ],
+  "filters": [
+    {
+      "id": "all",
+      "name": "all"
+    },
+    {
+      "id": "done",
+      "name": "done"
+    },
+    {
+      "id": "unexpected",
+      "name": "unexpected"
     }
   ]
 }

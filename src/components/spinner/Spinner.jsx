@@ -1,7 +1,7 @@
 const Spinner = () => {
   return (
       <div>
-          <span className="visually-hidden">Loading...</span>
+          <span>Loading...</span>
       </div>
   )
 }
