@@ -55,7 +55,7 @@ export const TodoList = () => {
   const elements = renderTodosList(filteredAndSearchTodos)
 
   return (
-      <ul style={{display: 'grid', gap: 50, gridAutoFlow: "row", padding: 0, margin: 0}}>
+      <ul className="grid gap-5 m-0 p-0">
         {elements}
       </ul>
   )
